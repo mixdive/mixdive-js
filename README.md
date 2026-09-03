@@ -3,6 +3,8 @@
 Official JavaScript SDKs for [Mixdive](https://mixdive.com) — self-hosted
 product analytics. Send an event, get its report screen automatically.
 
+Documentation: **[docs.mixdive.com](https://docs.mixdive.com)** — concepts, integrations, the ingest API.
+
 | Package | What it is |
 |---|---|
 | [`@mixdive/browser`](packages/browser) | The browser SDK: one script tag for any website, or an npm module for bundled apps. Visitors, sessions, page views and session durations come for free. |
