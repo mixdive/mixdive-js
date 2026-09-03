@@ -1,0 +1,55 @@
+{
+  "name": "@mixdive/browser",
+  "version": "0.1.0",
+  "description": "Mixdive browser SDK — the web tag and the npm client for self-hosted product analytics.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/mixdive/mixdive-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mixdive/mixdive-js.git",
+    "directory": "packages/browser"
+  },
+  "bugs": "https://github.com/mixdive/mixdive-js/issues",
+  "keywords": [
+    "mixdive",
+    "analytics",
+    "product-analytics",
+    "web-analytics",
+    "self-hosted",
+    "privacy"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/mixdive.js"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./tag": "./dist/mixdive.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
