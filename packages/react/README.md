@@ -16,3 +16,6 @@ mixdive.track('checkout_completed', { plan: 'team' })
 Page views follow your router automatically; `usePageViews(pathname)` is
 there for apps that prefer to drive them. Full guide:
 [github.com/mixdive/mixdive-js](https://github.com/mixdive/mixdive-js#readme). Apache-2.0.
+
+More SDKs are on the way — missing one for your platform? Tell us at
+[hello@mixdive.com](mailto:hello@mixdive.com).

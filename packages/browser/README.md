@@ -16,3 +16,6 @@ mixdive.track('checkout_completed', { plan: 'team' })
 
 Full guide, API and privacy notes: [github.com/mixdive/mixdive-js](https://github.com/mixdive/mixdive-js#readme).
 The tag file ships in this package as `dist/mixdive.js`. Apache-2.0.
+
+More SDKs are on the way — missing one for your platform? Tell us at
+[hello@mixdive.com](mailto:hello@mixdive.com).

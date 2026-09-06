@@ -15,6 +15,9 @@ Looking for a backend? The Go SDK is
 The browser SDK is for what happens in the browser; profile enrichment and
 server-side events belong to your backend.
 
+More SDKs are on the way. Missing one for your platform or language? Tell us
+at [hello@mixdive.com](mailto:hello@mixdive.com) — requests set the order.
+
 ## Quick start
 
 Create a **Web** app under **Settings → Apps** in your Mixdive console and
