@@ -1,9 +1,9 @@
 # mixdive-js
 
-Official JavaScript SDKs for [Mixdive](https://mixdive.com) — self-hosted
+The official JavaScript SDKs for [Mixdive](https://mixdive.com), self-hosted
 product analytics. Send an event, get its report screen automatically.
 
-Documentation: **[docs.mixdive.com](https://docs.mixdive.com)** — concepts, integrations, the ingest API.
+Documentation: **[docs.mixdive.com](https://docs.mixdive.com)**. Concepts, integrations, the ingest API.
 
 | Package | What it is |
 |---|---|
@@ -12,19 +12,19 @@ Documentation: **[docs.mixdive.com](https://docs.mixdive.com)** — concepts, in
 
 Looking for a backend? The Go SDK is
 [`github.com/mixdive/mixdive-go`](https://github.com/mixdive/mixdive-go).
-The browser SDK is for what happens in the browser; profile enrichment and
+The browser SDK covers what happens in the browser. Profile enrichment and
 server-side events belong to your backend.
 
 More SDKs are on the way. Missing one for your platform or language? Tell us
-at [hello@mixdive.com](mailto:hello@mixdive.com) — requests set the order.
+at [hello@mixdive.com](mailto:hello@mixdive.com). Requests set the order.
 
 ## Quick start
 
 Create a **Web** app under **Settings → Apps** in your Mixdive console and
-copy its API key (`mx_…`). Keys for web apps are visible in page source by
-design — they can only write events, never read anything.
+copy its API key (`mx_…`). A web app's key is visible in page source, which
+is fine. It can write events and read nothing.
 
-### Any website — one script tag
+### Any website: one script tag
 
 ```html
 <script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
@@ -40,23 +40,23 @@ stub so calls can be made before the script has loaded:
 <script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
 <script>
   mixdive('track', 'checkout_completed', { plan: 'team' });
-  mixdive('identify', currentUser.id);   // your own user id — the same one your backend sends
+  mixdive('identify', currentUser.id);   // your own user id, the same one your backend sends
 </script>
 ```
 
 After the script loads, `mixdive` is also an object: `mixdive.track(…)`,
 `mixdive.identify(…)` work the same.
 
-The server is the origin the script was loaded from — a copy served by your
+The server is the origin the script was loaded from, so a copy served by your
 Mixdive host needs nothing else. Serving it from elsewhere (your own CDN, a
 tag manager) takes `data-server`:
 
 | Attribute | Meaning |
 |---|---|
-| `data-key` | The app's API key. Required — without it the tag does nothing. |
+| `data-key` | The app's API key. Required: without it the tag does nothing. |
 | `data-server` | The Mixdive origin, e.g. `https://analytics.example.com`. Default: the script's own origin. |
 | `data-auto-page-views="false"` | Turn off automatic page views (send them with `mixdive.pageView()`). |
-| `data-app-version` | Your site's build version — see *App version* below. |
+| `data-app-version` | Your site's build version. See *App version* below. |
 | `data-debug="true"` | Log every send and every dropped call to the console. |
 
 **Where to get `mixdive.js`:** it ships in the npm package as
@@ -66,7 +66,7 @@ into your static assets, or load it from a CDN mirror of the package:
 Serving it from your own domain keeps your visitors' browsers talking to your
 servers only.
 
-### Bundled apps — npm
+### Bundled apps: npm
 
 ```sh
 npm i @mixdive/browser
@@ -81,7 +81,7 @@ mixdive.track('checkout_completed', { plan: 'team', seats: 4 })
 mixdive.identify(user.id)
 ```
 
-`server` is required here — a bundled app has no script origin to infer it
+`server` is required here. A bundled app has no script origin to infer it
 from.
 
 ### React
@@ -120,19 +120,19 @@ function PageViews() {
 
 The provider starts the client during its first render, so a child that
 calls `identify` in a mount effect is already served. The client works
-without a provider too — `useMixdive()` returns the singleton, and calls made
+without a provider too. `useMixdive()` returns the singleton, and calls made
 before `init` are buffered and delivered once it runs. Server-side rendering
 is a no-op: nothing touches `window` until the browser renders.
 
 ## What is sent automatically
 
 - **A device id** (`mx_did` in localStorage): a random 32-hex value minted on
-  the first visit. Random, never derived from the browser — Mixdive does no
-  fingerprinting, and the server never generates one either. It is what
+  the first visit. It is never derived from the browser, so there is no
+  fingerprinting here, and the server never generates one either. This is what
   makes a visitor one visitor across sessions and across sign-in/sign-out.
 - **A session id** (`mx_ses`): shared across tabs, renewed after 30 minutes
   of inactivity, and rotated when a landing URL carries a *different*
-  `utm_source` — a new campaign click is never attributed to an old session.
+  `utm_source`. A new campaign click is never attributed to an old session.
 - **`page_view`** on load and on every history change, with the page *path*
   (never the query string), the title, and the previous path as referrer.
   The same path twice in a row is sent once, so router replays do not double.
@@ -140,15 +140,17 @@ is a no-op: nothing touches `window` until the browser renders.
   session's duration in seconds. It is best-effort by nature (a killed tab
   can lose one), so repeated beacons are collapsed server-side and only ever
   widen the duration. Idle time is never billed.
-- **Context** on every item: screen resolution and pixel density, the
-  browser language, and the session's acquisition — the external landing
-  referrer (query-stripped) and `utm_source` / `utm_medium` / `utm_campaign`.
-  Resent every time so attribution survives a lost first item.
+- **Context** on every item: screen resolution and pixel density, the browser
+  language, and the session's acquisition. Acquisition here means the external
+  landing referrer (query-stripped) plus `utm_source` / `utm_medium` /
+  `utm_campaign`. It is resent every time, so attribution survives a lost
+  first item.
 
 Not sent, ever: full URLs or query strings, the visitor's IP (the server
-never stores it either), timestamps (the server's receive time is used —
-browser clocks lie), and nothing at all in automated browsers
-(`navigator.webdriver`), so test runners never pollute your data.
+never stores it either), and timestamps, because browser clocks lie and the
+server's receive time is used instead. In an automated browser
+(`navigator.webdriver`) nothing is sent at all, so test runners never pollute
+your data.
 
 ## API
 
@@ -164,21 +166,21 @@ mixdive.reset()
 mixdive.version
 ```
 
-Every call returns immediately and never throws into your page. Analytics
-that is off — no key, no server, an automated browser — turns every call into
-a silent no-op (one console notice for a misconfiguration, none for bots).
-The first `init` wins; calls made before it are buffered (up to 200) and
+Every call returns immediately and never throws into your page. Analytics can
+also be off: no key, no server, or an automated browser. Then every call is a
+silent no-op, with one console notice for a misconfiguration and none for
+bots. The first `init` wins. Calls made before it are buffered (up to 200) and
 delivered when it runs.
 
 ### Users
 
-`identify(userId)` names the signed-in user. It must be **your** id — the same
-one your backend sends through the Go SDK — never a random or device-derived
-value: Mixdive never generates user ids, and a junk id becomes a permanent
-junk profile. After `identify`, every event carries the user id (it is kept
-in `mx_uid` across pageloads until `reset()`), and the server links the
-device to the user and retroactively attributes the device's anonymous
-history to them — pre-signup browsing becomes part of the user's story.
+`identify(userId)` names the signed-in user. It must be **your** id, the same
+one your backend sends through the Go SDK. Never pass a random or
+device-derived value: Mixdive never generates user ids, and a junk id becomes
+a permanent junk profile. After `identify`, every event carries the user id,
+kept in `mx_uid` across pageloads until `reset()`. The server also links the
+device to the user and retroactively attributes the device's anonymous history
+to them, so pre-signup browsing becomes part of the user's story.
 
 `setUser(userId, profile)` is `identify` plus a profile update in one call.
 Profiles merge: send only what changed.
@@ -187,8 +189,8 @@ Profiles merge: send only what changed.
 mixdive.setUser(user.id, { name: user.name, email: user.email, custom: { plan: 'team' } })
 ```
 
-`reset()` forgets the visitor entirely — device, session and user — so the
-next event mints a fresh one. Call it on sign-out when the next person at
+`reset()` forgets the visitor entirely: device, session and user. The next
+event mints a fresh one. Call it on sign-out when the next person at
 the keyboard is someone else, and when consent is withdrawn.
 
 ### Measures
@@ -197,13 +199,13 @@ Three measures ride on an occurrence itself:
 
 ```ts
 mixdive.track('item_purchase', { category: 'books' }, {
-  count: 3,       // one occurrence, three happenings — every counter moves by 3
+  count: 3,       // one occurrence, three happenings: every counter moves by 3
   sum: 129.9,     // accumulated into the event's sum total (money, points); negative subtracts
   duration: 90.5, // seconds, accumulated into the event's duration total
 })
 ```
 
-The report shows range totals and per-event averages; events that never send
+The report shows range totals and per-event averages. Events that never send
 measures see no change.
 
 ### Occurrence ids
@@ -223,7 +225,8 @@ mixdive.login('google')
 mixdive.signUp('email')
 ```
 
-`page_view` and `session_end` are built-ins too — the SDK sends them for you.
+`page_view` and `session_end` are built-ins too, and the SDK sends them for
+you.
 
 ### App version
 
@@ -237,23 +240,22 @@ want the breakdown.
 
 The SDK posts to the Mixdive ingest API exactly as the wire contract defines:
 `navigator.sendBeacon` with a `text/plain` body and the key in the query
-string — preflight-free, and queued by the browser so it survives navigation
-and unload — with `fetch(keepalive)` as the fallback. The server fast-acks
-with `202` (queued, not processed); reports typically reflect an event within
-a minute. Blocked storage (private mode) degrades to per-pageload ids: events
-still count, the pageload still coheres, and visitor totals inflate slightly
-for those users.
+string. That combination needs no preflight, and the browser queues it, so it
+survives navigation and unload. `fetch(keepalive)` is the fallback. The server
+fast-acks with `202`, meaning queued rather than processed, and reports
+typically reflect an event within a minute. Blocked storage (private mode)
+degrades to per-pageload ids: events still count, the pageload still coheres,
+and visitor totals inflate slightly for those users.
 
 ## Consent and privacy
 
-The device id is a persistent online identifier — under GDPR/ePrivacy it is
-consent-relevant, like an analytics cookie. The SDK sets no cookies; it uses
-three localStorage keys, `mx_did`, `mx_ses` and `mx_uid`, which you can name
+The device id is a persistent online identifier. Under GDPR/ePrivacy that
+makes it consent-relevant, like an analytics cookie. The SDK sets no cookies.
+It uses three localStorage keys, `mx_did`, `mx_ses` and `mx_uid`, which you can name
 in your storage declarations.
 
-- **Load after consent.** The simplest model: add the script tag (or call
-  `init`) only once analytics consent is granted. Nothing is stored or sent
-  before.
+- **Load after consent.** Add the script tag (or call `init`) only once
+  analytics consent is granted. Nothing is stored or sent before that.
 - **On withdrawal,** call `mixdive.reset()` (or clear the three keys). A
   re-granted consent then mints a fresh visitor.
 - **Tag managers:** put the Mixdive tag in your analytics consent group
@@ -291,11 +293,11 @@ npm test            # vitest + jsdom, both packages
 npm run typecheck
 ```
 
-Layout: `packages/browser` (`src/client.ts` is the client; `src/tag-install.ts`
-the script-tag shape; `src/session.ts` the pure session rules) and
+Layout: `packages/browser` (`src/client.ts` is the client, `src/tag-install.ts`
+the script-tag shape, `src/session.ts` the pure session rules) and
 `packages/react`. The SDK has **zero runtime dependencies**; keep it that way.
 Field names on the wire follow the Mixdive ingest contract and nothing is
-invented here — a new field starts in the contract, then lands in the SDKs.
+invented here. A new field starts in the contract, then lands in the SDKs.
 
 ## License
 
