@@ -1,9 +1,9 @@
 {
   "name": "@mixdive/browser",
-  "version": "0.1.0",
-  "description": "Mixdive browser SDK — the web tag and the npm client for self-hosted product analytics.",
+  "version": "0.1.1",
+  "description": "Self-hosted product analytics for the web. The Mixdive script tag and npm client: page views, visitors, sessions and your own events.",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/mixdive/mixdive-js#readme",
+  "homepage": "https://mixdive.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mixdive/mixdive-js.git",
@@ -16,7 +16,11 @@
     "product-analytics",
     "web-analytics",
     "self-hosted",
-    "privacy"
+    "privacy",
+    "gdpr",
+    "cookieless",
+    "page-views",
+    "event-tracking"
   ],
   "type": "module",
   "sideEffects": [
