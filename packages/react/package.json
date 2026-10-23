@@ -1,6 +1,6 @@
 {
   "name": "@mixdive/react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Self-hosted product analytics for React. The Mixdive provider, the useMixdive hook, and page views that follow your router.",
   "license": "Apache-2.0",
   "homepage": "https://mixdive.com",
