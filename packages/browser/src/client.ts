@@ -299,7 +299,7 @@ export function createMixdive(): Mixdive {
       off = true
       buffer = []
       try {
-        console.warn('[mixdive] off: init needs an API key and the server origin (https://analytics.example.com)')
+        console.warn('[mixdive] off: init needs an API key and the server origin (https://mixdive.example.com)')
       } catch {
         // no console
       }

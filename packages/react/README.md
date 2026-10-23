@@ -7,14 +7,14 @@ your router. Everything else about your app's behaviour arrives on its own.
 [![The Mixdive console: the events list, with every event a product sends, its counts and its unique users](https://mixdive.com/assets/video/hero-console-poster.webp)](https://mixdive.com/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=hero)
 
 The console your events land in, running on your own server.
-[Open the live demo](https://demo1.mixdive.com/): a full Mixdive filled with a
-fictional shop's data, no sign-up.
+[Open a live demo](https://mixdive.com/demo/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=demo): a full Mixdive filled with a
+fictional company's data, a shop, a bank or a software company, no sign-up.
 
 [Website](https://mixdive.com/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=links)
 ·
 [Documentation](https://docs.mixdive.com/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=links)
 ·
-[Live demo](https://demo1.mixdive.com/)
+[Live demos](https://mixdive.com/demo/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=demo)
 ·
 [React guide](https://docs.mixdive.com/integrations/react/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=links)
 ·
@@ -46,7 +46,7 @@ npm i @mixdive/react
 import { MixdiveProvider, useMixdive } from '@mixdive/react'
 
 root.render(
-  <MixdiveProvider apiKey="mx_…" server="https://analytics.example.com">
+  <MixdiveProvider apiKey="mx_…" server="https://mixdive.example.com">
     <App />
   </MixdiveProvider>,
 )
@@ -122,9 +122,8 @@ name, the address your apps will use, and an owner account.
 ·
 [Install](https://docs.mixdive.com/operate/install/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=install)
 
-Mixdive is in beta with a small group of teams whose requirements shape what
-gets built. Running a real product whose data cannot go to a third party? A few
-lines to beta@mixdive.com is enough, and a person answers.
+Running a real product whose data cannot go to a third party? A few lines to
+hello@mixdive.com is enough to get help setting it up, and a person answers.
 
 ## More SDKs
 

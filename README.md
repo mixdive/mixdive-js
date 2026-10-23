@@ -27,7 +27,7 @@ is fine. It can write events and read nothing.
 ### Any website: one script tag
 
 ```html
-<script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@mixdive/browser@0.1/dist/mixdive.js" data-server="https://mixdive.example.com" data-key="mx_…"></script>
 ```
 
 That is the whole integration. Page views (including single-page-app
@@ -37,7 +37,7 @@ stub so calls can be made before the script has loaded:
 
 ```html
 <script>window.mixdive=window.mixdive||function(){(mixdive.q=mixdive.q||[]).push(arguments)};</script>
-<script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@mixdive/browser@0.1/dist/mixdive.js" data-server="https://mixdive.example.com" data-key="mx_…"></script>
 <script>
   mixdive('track', 'checkout_completed', { plan: 'team' });
   mixdive('identify', currentUser.id);   // your own user id, the same one your backend sends
@@ -47,14 +47,14 @@ stub so calls can be made before the script has loaded:
 After the script loads, `mixdive` is also an object: `mixdive.track(…)`,
 `mixdive.identify(…)` work the same.
 
-The server is the origin the script was loaded from, so a copy served by your
-Mixdive host needs nothing else. Serving it from elsewhere (your own CDN, a
-tag manager) takes `data-server`:
+Mixdive servers do not serve the script themselves, so it comes from the npm
+CDN (or a copy of `dist/mixdive.js` in your own static files) and
+`data-server` tells it where your server is:
 
 | Attribute | Meaning |
 |---|---|
 | `data-key` | The app's API key. Required: without it the tag does nothing. |
-| `data-server` | The Mixdive origin, e.g. `https://analytics.example.com`. Default: the script's own origin. |
+| `data-server` | The Mixdive origin, e.g. `https://mixdive.example.com`. Without it the tag sends to the origin it was loaded from, so set it whenever the script comes from a CDN. |
 | `data-auto-page-views="false"` | Turn off automatic page views (send them with `mixdive.pageView()`). |
 | `data-app-version` | Your site's build version. See *App version* below. |
 | `data-debug="true"` | Log every send and every dropped call to the console. |
@@ -75,7 +75,7 @@ npm i @mixdive/browser
 ```ts
 import { mixdive } from '@mixdive/browser'
 
-mixdive.init({ key: 'mx_…', server: 'https://analytics.example.com' })
+mixdive.init({ key: 'mx_…', server: 'https://mixdive.example.com' })
 
 mixdive.track('checkout_completed', { plan: 'team', seats: 4 })
 mixdive.identify(user.id)
@@ -94,7 +94,7 @@ npm i @mixdive/react
 import { MixdiveProvider, useMixdive } from '@mixdive/react'
 
 root.render(
-  <MixdiveProvider apiKey="mx_…" server="https://analytics.example.com">
+  <MixdiveProvider apiKey="mx_…" server="https://mixdive.example.com">
     <App />
   </MixdiveProvider>,
 )
@@ -272,7 +272,7 @@ trigger, then send dataLayer events through the queue from further tags:
   window.mixdive = window.mixdive || function () { (mixdive.q = mixdive.q || []).push(arguments) };
   mixdive('init', { key: '{{Const - Mixdive API Key}}', server: '{{Const - Mixdive Host}}' });
   var s = document.createElement('script'); s.async = true;
-  s.src = '{{Const - Mixdive Host}}/js/mixdive.js'; document.head.appendChild(s);
+  s.src = 'https://cdn.jsdelivr.net/npm/@mixdive/browser@0.1/dist/mixdive.js'; document.head.appendChild(s);
 </script>
 ```
 

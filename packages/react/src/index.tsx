@@ -1,6 +1,6 @@
 // @mixdive/react — React bindings for the Mixdive browser SDK.
 //
-//   <MixdiveProvider apiKey="mx_…" server="https://analytics.example.com">
+//   <MixdiveProvider apiKey="mx_…" server="https://mixdive.example.com">
 //     <App />
 //   </MixdiveProvider>
 //

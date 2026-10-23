@@ -1,7 +1,7 @@
 // @mixdive/browser — the Mixdive browser SDK.
 //
 //   import { mixdive } from '@mixdive/browser'
-//   mixdive.init({ key: 'mx_…', server: 'https://analytics.example.com' })
+//   mixdive.init({ key: 'mx_…', server: 'https://mixdive.example.com' })
 //   mixdive.track('checkout_completed', { plan: 'team' })
 //
 // `mixdive` is the one client an app needs. `createMixdive` builds another

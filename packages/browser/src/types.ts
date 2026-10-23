@@ -12,7 +12,7 @@ export interface InitOptions {
   /** The app's API key from Settings → Apps (`mx_…`). Required — without it the client is off. */
   key: string
   /**
-   * The Mixdive server's origin, e.g. `https://analytics.example.com`. Required
+   * The Mixdive server's origin, e.g. `https://mixdive.example.com`. Required
    * when the SDK is imported from npm; the script tag fills it in with the
    * origin it was loaded from.
    */
@@ -42,11 +42,16 @@ export interface TrackOptions {
 
 export interface UserProfile {
   name?: string
+  /** A label for people to read. It need not be unique; the user id tells users apart. */
   username?: string
   email?: string
   organization?: string
   phone?: string
-  /** An avatar URL. */
+  /**
+   * The URL of the user's photo, shown beside their name in the console. The
+   * server keeps only an absolute http(s) URL of at most 2048 characters and
+   * ignores anything else, leaving the stored photo as it was.
+   */
   picture?: string
   gender?: string
   /** Year of birth — a positive whole number. */

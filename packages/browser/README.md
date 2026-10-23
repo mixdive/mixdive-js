@@ -8,14 +8,14 @@ themselves. Your own events take one call.
 [![The Mixdive console: the events list, with every event a product sends, its counts and its unique users](https://mixdive.com/assets/video/hero-console-poster.webp)](https://mixdive.com/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=hero)
 
 The console your events land in, running on your own server.
-[Open the live demo](https://demo1.mixdive.com/): a full Mixdive filled with a
-fictional shop's data, no sign-up.
+[Open a live demo](https://mixdive.com/demo/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=demo): a full Mixdive filled with a
+fictional company's data, a shop, a bank or a software company, no sign-up.
 
 [Website](https://mixdive.com/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=links)
 ·
 [Documentation](https://docs.mixdive.com/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=links)
 ·
-[Live demo](https://demo1.mixdive.com/)
+[Live demos](https://mixdive.com/demo/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=demo)
 ·
 [Web tag guide](https://docs.mixdive.com/integrations/web-tag/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=links)
 ·
@@ -46,7 +46,7 @@ npm i @mixdive/browser
 ```ts
 import { mixdive } from '@mixdive/browser'
 
-mixdive.init({ key: 'mx_…', server: 'https://analytics.example.com' })
+mixdive.init({ key: 'mx_…', server: 'https://mixdive.example.com' })
 
 mixdive.track('checkout_completed', { plan: 'team', seats: 4 })
 mixdive.identify(user.id)
@@ -62,15 +62,17 @@ a provider, a hook and router-driven page views on top of this package.
 ## Or one script tag, no build step
 
 ```html
-<script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@mixdive/browser@0.1/dist/mixdive.js" data-server="https://mixdive.example.com" data-key="mx_…"></script>
 ```
 
-That is the whole integration, and your Mixdive server serves the file. To call
+That is the whole integration. `data-server` is the address of your Mixdive
+server, which does not serve the script itself, so the tag comes from the npm
+CDN, pinned to 0.1. To call
 `mixdive(…)` from page code before the script has loaded, add the one-line stub:
 
 ```html
 <script>window.mixdive=window.mixdive||function(){(mixdive.q=mixdive.q||[]).push(arguments)};</script>
-<script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@mixdive/browser@0.1/dist/mixdive.js" data-server="https://mixdive.example.com" data-key="mx_…"></script>
 <script>
   mixdive('track', 'checkout_completed', { plan: 'team' });
   mixdive('identify', currentUser.id);
@@ -150,9 +152,8 @@ name, the address your apps will use, and an owner account.
 ·
 [Install](https://docs.mixdive.com/operate/install/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=install)
 
-Mixdive is in beta with a small group of teams whose requirements shape what
-gets built. Running a real product whose data cannot go to a third party? A few
-lines to beta@mixdive.com is enough, and a person answers.
+Running a real product whose data cannot go to a third party? A few lines to
+hello@mixdive.com is enough to get help setting it up, and a person answers.
 
 ## More SDKs
 

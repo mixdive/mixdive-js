@@ -1,6 +1,6 @@
 // The script-tag shape of the SDK. `mixdive.js` runs this once on load:
 //
-//   <script defer src="https://analytics.example.com/js/mixdive.js" data-key="mx_…"></script>
+//   <script defer src="https://cdn.jsdelivr.net/npm/@mixdive/browser@0.1/dist/mixdive.js" data-key="mx_…" data-server="https://mixdive.example.com"></script>
 //
 // - `data-key` starts the client; the server defaults to the origin the
 //   script was loaded from (a Mixdive server serves its own tag), and
