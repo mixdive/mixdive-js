@@ -78,7 +78,10 @@ function PageViews() {
 }
 ```
 
-The provider starts the client during its first render, so a child that calls
+Every export is a client component or a hook, and the package says so (`'use
+client'`), so a React Server Component such as a Next.js root layout can
+render the provider directly. The provider starts the client during its first
+render, so a child that calls
 `identify` in a mount effect is already served. `useMixdive()` returns the same
 singleton with or without a provider, calls made before it are buffered, and
 server-side rendering is a no-op: nothing touches `window` until the browser
@@ -127,8 +130,11 @@ hello@mixdive.com is enough to get help setting it up, and a person answers.
 
 ## More SDKs
 
-Server-side events and profile enrichment belong to your backend, through
-[`mixdive-go`](https://github.com/mixdive/mixdive-go). There is also a [Google
+On Next.js, [`@mixdive/next`](https://www.npmjs.com/package/@mixdive/next)
+wraps this package with the environment variables read for you and adds the
+server half. Server-side events and profile enrichment belong to your
+backend, through [`@mixdive/node`](https://www.npmjs.com/package/@mixdive/node)
+or [`mixdive-go`](https://github.com/mixdive/mixdive-go). There is also a [Google
 Tag
 Manager](https://docs.mixdive.com/integrations/google-tag-manager/?utm_source=npm&utm_medium=referral&utm_campaign=react_readme&utm_content=integrations)
 template and an [HTTP

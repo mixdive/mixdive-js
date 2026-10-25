@@ -158,7 +158,9 @@ hello@mixdive.com is enough to get help setting it up, and a person answers.
 ## More SDKs
 
 A backend belongs in the picture too: profile enrichment and server-side events
-go through [`mixdive-go`](https://github.com/mixdive/mixdive-go). There is also
+go through [`@mixdive/node`](https://www.npmjs.com/package/@mixdive/node) or
+[`mixdive-go`](https://github.com/mixdive/mixdive-go). Next.js apps get both
+halves in [`@mixdive/next`](https://www.npmjs.com/package/@mixdive/next). There is also
 a [Google Tag
 Manager](https://docs.mixdive.com/integrations/google-tag-manager/?utm_source=npm&utm_medium=referral&utm_campaign=browser_readme&utm_content=integrations)
 template and an [HTTP

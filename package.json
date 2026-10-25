@@ -2,15 +2,17 @@
   "name": "mixdive-js",
   "private": true,
   "version": "0.0.0",
-  "description": "Mixdive JavaScript SDKs — the browser SDK (web tag + npm) and the React bindings.",
+  "description": "Mixdive JavaScript SDKs: the browser SDK (web tag + npm), the React bindings, the server SDK and the Next.js bindings.",
   "license": "Apache-2.0",
   "type": "module",
   "workspaces": [
     "packages/browser",
-    "packages/react"
+    "packages/react",
+    "packages/node",
+    "packages/next"
   ],
   "scripts": {
-    "build": "npm run build -w @mixdive/browser && npm run build -w @mixdive/react",
+    "build": "npm run build -w @mixdive/browser && npm run build -w @mixdive/react && npm run build -w @mixdive/node && npm run build -w @mixdive/next",
     "typecheck": "npm run typecheck --workspaces",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -25,6 +27,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "jsdom": "^27.4.0",
+    "next": "^16.4.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tsup": "^8.5.1",

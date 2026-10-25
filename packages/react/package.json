@@ -1,6 +1,6 @@
 {
   "name": "@mixdive/react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Self-hosted product analytics for React. The Mixdive provider, the useMixdive hook, and page views that follow your router.",
   "license": "Apache-2.0",
   "homepage": "https://mixdive.com",
@@ -49,7 +49,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@mixdive/browser": "^0.1.1"
+    "@mixdive/browser": "^0.1.3"
   },
   "peerDependencies": {
     "react": ">=18"

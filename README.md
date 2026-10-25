@@ -9,11 +9,13 @@ Documentation: **[docs.mixdive.com](https://docs.mixdive.com)**. Concepts, integ
 |---|---|
 | [`@mixdive/browser`](packages/browser) | The browser SDK: one script tag for any website, or an npm module for bundled apps. Visitors, sessions, page views and session durations come for free. |
 | [`@mixdive/react`](packages/react) | React bindings on top of it: a provider, a hook, router-driven page views. |
+| [`@mixdive/node`](packages/node) | The server SDK: events, user profiles and records from Node.js 20+ or an edge runtime. Calls never block or throw. |
+| [`@mixdive/next`](packages/next) | Next.js: the provider for the root layout, and events from Server Actions, Route Handlers and middleware sent after the response. |
 
-Looking for a backend? The Go SDK is
-[`github.com/mixdive/mixdive-go`](https://github.com/mixdive/mixdive-go).
-The browser SDK covers what happens in the browser. Profile enrichment and
-server-side events belong to your backend.
+The browser packages cover what happens in the browser. Profile enrichment and
+server-side events belong to your backend: `@mixdive/node` for JavaScript
+servers, [`github.com/mixdive/mixdive-go`](https://github.com/mixdive/mixdive-go)
+for Go.
 
 More SDKs are on the way. Missing one for your platform or language? Tell us
 at [hello@mixdive.com](mailto:hello@mixdive.com). Requests set the order.
@@ -124,6 +126,57 @@ without a provider too. `useMixdive()` returns the singleton, and calls made
 before `init` are buffered and delivered once it runs. Server-side rendering
 is a no-op: nothing touches `window` until the browser renders.
 
+### Next.js
+
+```sh
+npm i @mixdive/next
+```
+
+```tsx
+// app/layout.tsx: the layout stays a Server Component
+import { MixdiveProvider } from '@mixdive/next'
+
+<body>
+  <MixdiveProvider />   {/* NEXT_PUBLIC_MIXDIVE_SERVER + NEXT_PUBLIC_MIXDIVE_KEY */}
+  {children}
+</body>
+```
+
+```ts
+// a Server Action or Route Handler
+import { mixdive } from '@mixdive/next/server'   // MIXDIVE_API_KEY, a backend app's key
+
+mixdive.track('order_completed', { plan: 'team' }, { user: order.userId, sum: order.total })
+```
+
+Server calls return at once and finish after the response has been sent
+(`after()`, Next.js 15.1 and later). The [package README](packages/next) has
+the Pages Router and the details.
+
+### Servers: Node.js and the edge
+
+```sh
+npm i @mixdive/node
+```
+
+```ts
+import { createMixdive } from '@mixdive/node'
+
+const mixdive = createMixdive({ server: 'https://mixdive.example.com', apiKey: process.env.MIXDIVE_API_KEY! })
+
+mixdive.track('post_liked', undefined, {
+  user: 'u9',
+  users: [{ id: 'u_author', role: 'owner' }],
+  records: [{ model: 'post', id: 'p1' }],
+})
+mixdive.setUser('u9', { name: 'Ada Lovelace', increment: { likes_given: 1 } })
+mixdive.setRecord('post', 'p1', { data: { topic: 'cooking' } })
+await mixdive.flush()   // only where the process may stop right after (serverless, scripts)
+```
+
+Use a **backend** app's key. Everything about the server client (retries, the
+queue, batching under the 32 KB cap) is in its [README](packages/node).
+
 ## What is sent automatically
 
 - **A device id** (`mx_did` in localStorage): a random 32-hex value minted on
@@ -175,7 +228,7 @@ delivered when it runs.
 ### Users
 
 `identify(userId)` names the signed-in user. It must be **your** id, the same
-one your backend sends through the Go SDK. Never pass a random or
+one your backend sends through `@mixdive/node` or the Go SDK. Never pass a random or
 device-derived value: Mixdive never generates user ids, and a junk id becomes
 a permanent junk profile. After `identify`, every event carries the user id,
 kept in `mx_uid` across pageloads until `reset()`. The server also links the
@@ -289,13 +342,18 @@ that reaches the server auto-registers as a permanent event (the SDK drops
 ```sh
 npm install
 npm run build       # tsup: packages/*/dist (incl. the tag, packages/browser/dist/mixdive.js)
-npm test            # vitest + jsdom, both packages
+npm test            # vitest (jsdom for the browser packages, node for @mixdive/node), every package
 npm run typecheck
 ```
 
 Layout: `packages/browser` (`src/client.ts` is the client, `src/tag-install.ts`
-the script-tag shape, `src/session.ts` the pure session rules) and
-`packages/react`. The SDK has **zero runtime dependencies**; keep it that way.
+the script-tag shape, `src/session.ts` the pure session rules),
+`packages/react`, `packages/node` (`src/payload.ts` renders calls to wire
+items, `src/client.ts` queues and batches, `src/transport.ts` retries) and
+`packages/next` (`src/index.tsx` the browser half, `src/server.ts` the server
+half). The browser and server SDKs have **zero runtime dependencies**; keep it
+that way. `next` is a dev dependency only so `@mixdive/next` typechecks
+against the real `next/server`; its tests stand in for it.
 Field names on the wire follow the Mixdive ingest contract and nothing is
 invented here. A new field starts in the contract, then lands in the SDKs.
 

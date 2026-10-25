@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createMixdive } from '../src/client'
+import { TITLE_WAIT_MS, createMixdive } from '../src/client'
 import { KEY, SERVER, eventsOf, last, recordSends, resetBrowser, setReferrer, type Sent } from './helpers'
 
 // Page views and the history hooks. Each client patches history and listens
@@ -73,5 +73,63 @@ describe('auto page views', () => {
     expect(pv).toHaveLength(1)
     expect(pv[0]!.body.user_id).toBe('user-1')
     expect(sent[0]!.url).toContain('/ingest/user') // identify went first
+  })
+})
+
+describe('navigation page views wait for the new title', () => {
+  const views = () => mine().filter((s) => s.body.event_key === 'page_view').map((s) => s.body.properties)
+
+  it('sends the view once the router sets the title, with that title and the path it went to', async () => {
+    document.title = 'Home'
+    const c = createMixdive()
+    c.init({ key: KEY, server: SERVER })
+    history.pushState({}, '', '/pricing')
+    await vi.advanceTimersByTimeAsync(2)
+    expect(views()).toHaveLength(1) // the URL moved, the title has not yet
+    document.title = 'Pricing' // the router's next render
+    await vi.advanceTimersByTimeAsync(0)
+    expect(views()).toEqual([
+      { url: '/', title: 'Home' },
+      { url: '/pricing', title: 'Pricing', referrer: '/' },
+    ])
+  })
+
+  it('sends a page whose title never changes once the wait is over', async () => {
+    document.title = 'Acme'
+    const c = createMixdive()
+    c.init({ key: KEY, server: SERVER })
+    history.pushState({}, '', '/same-title')
+    await vi.advanceTimersByTimeAsync(TITLE_WAIT_MS - 1)
+    expect(views()).toHaveLength(1)
+    await vi.advanceTimersByTimeAsync(1)
+    expect(views()[1]).toEqual({ url: '/same-title', title: 'Acme', referrer: '/' })
+  })
+
+  it("keeps waiting through a router's replaceState of the same path, and a new path sends the waiting view at once", async () => {
+    document.title = 'Home'
+    const c = createMixdive()
+    c.init({ key: KEY, server: SERVER })
+    history.pushState({}, '', '/a')
+    history.replaceState({ router: 'state' }, '', '/a')
+    await vi.advanceTimersByTimeAsync(10)
+    expect(views()).toHaveLength(1)
+    history.pushState({}, '', '/b')
+    expect(views().map((v) => v.url)).toEqual(['/', '/a'])
+    document.title = 'B'
+    await vi.advanceTimersByTimeAsync(0)
+    expect(views()[2]).toEqual({ url: '/b', title: 'B', referrer: '/a' })
+  })
+
+  it('sends a waiting view before the session_end beacon when the page goes away', async () => {
+    document.title = 'Home'
+    const c = createMixdive()
+    c.init({ key: KEY, server: SERVER })
+    history.pushState({}, '', '/leaving')
+    window.dispatchEvent(new Event('pagehide'))
+    const keys = mine().map((s) => [s.body.event_key, s.body.properties?.url])
+    expect(keys.slice(-2)).toEqual([
+      ['page_view', '/leaving'],
+      ['session_end', undefined],
+    ])
   })
 })

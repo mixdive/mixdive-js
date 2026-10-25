@@ -23,6 +23,8 @@ export const VERSION: string = typeof __MIXDIVE_VERSION__ === 'string' ? __MIXDI
 export const STORAGE_KEYS = { device: 'mx_did', session: 'mx_ses', user: 'mx_uid' } as const
 
 const MAX_BUFFER = 200
+/** How long a page view waits after a navigation for the router to set the new page's title. */
+export const TITLE_WAIT_MS = 500
 const MAX_COUNT = 1_000_000
 const PROFILE_STRINGS = ['name', 'username', 'email', 'organization', 'phone', 'picture', 'gender'] as const
 
@@ -44,6 +46,11 @@ export function createMixdive(): Mixdive {
   let deviceId: string | null = null
   let userId: string | null = null
   let prevPath: string | null = null
+  // The title the last page view carried, and the navigation waiting for its
+  // own title (see installHistoryHooks).
+  let viewTitle: string | null = null
+  let pendingPath: string | null = null
+  let pendingView: (() => void) | null = null
 
   const debug: Debug = (message, ...rest) => {
     if (settings && settings.debug) {
@@ -183,7 +190,8 @@ export function createMixdive(): Mixdive {
     if (path === prevPath) return // router replay — one view, not two
     const props: Properties = { url: path }
     try {
-      if (document.title) props.title = String(document.title).slice(0, 256)
+      viewTitle = String(document.title)
+      if (document.title) props.title = viewTitle.slice(0, 256)
     } catch {
       // no document
     }
@@ -227,6 +235,7 @@ export function createMixdive(): Mixdive {
   // ---- session lifecycle --------------------------------------------------
 
   function endSession(): void {
+    if (pendingView) pendingView() // a navigation still waiting for its title goes first
     try {
       const s = readSession()
       if (!s) return
@@ -268,10 +277,60 @@ export function createMixdive(): Mixdive {
 
   function installHistoryHooks(): void {
     const h = window.history
-    // After the URL changed, on the next tick — so a router that sets
-    // document.title synchronously after navigating is already done.
+    // Routers change the URL first and set the new page's title a render
+    // later: a few milliseconds on a fast machine (measured 3 ms in the
+    // Next.js App Router, 6 ms in its Pages Router), more on a slow phone.
+    // So a navigation's view keeps the path it went to and waits for the
+    // title to move, at most TITLE_WAIT_MS, which is also all a page whose
+    // title never changes waits.
     const schedule = () => {
-      setTimeout(() => run(() => pageViewNow()), 0)
+      let path = '/'
+      try {
+        path = location.pathname || '/'
+      } catch {
+        // no location
+      }
+      if (pendingView) {
+        if (path === pendingPath) return // the same navigation again (a router's own replaceState)
+        pendingView() // a new place: the waiting view goes now
+      }
+      let done = false
+      let observer: MutationObserver | undefined
+      const titleMoved = () => {
+        try {
+          return String(document.title) !== viewTitle
+        } catch {
+          return true
+        }
+      }
+      const send = () => {
+        if (done) return
+        done = true
+        pendingView = null
+        pendingPath = null
+        clearTimeout(timer)
+        try {
+          observer?.disconnect()
+        } catch {
+          // already gone
+        }
+        run(() => pageViewNow(path))
+      }
+      const timer = setTimeout(send, TITLE_WAIT_MS)
+      pendingView = send
+      pendingPath = path
+      // A router that set the title before the URL is already done.
+      setTimeout(() => {
+        if (titleMoved()) send()
+      }, 0)
+      try {
+        observer = new MutationObserver(() => {
+          if (titleMoved()) send()
+        })
+        observer.observe(document.head || document.documentElement, { subtree: true, childList: true, characterData: true })
+      } catch {
+        // no MutationObserver: the timer sends it
+      }
     }
     for (const m of ['pushState', 'replaceState'] as const) {
       const orig = h[m]
