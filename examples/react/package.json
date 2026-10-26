@@ -1,0 +1,25 @@
+{
+  "name": "mixdive-react-sandbox",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A tiny React shop wired to Mixdive with @mixdive/react. Opens on StackBlitz.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mixdive/react": "^0.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.0"
+  }
+}
